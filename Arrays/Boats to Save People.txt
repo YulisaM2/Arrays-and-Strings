@@ -1,0 +1,68 @@
+/** Solution to problem found here:https://leetcode.com/problems/boats-to-save-people/
+*
+* The i-th person has weight people[i], and each boat can carry a maximum weight of limit.
+* Each boat carries at most 2 people at the same time, provided the sum of the weight of those people is at most limit.
+* Return the minimum number of boats to carry every given person.  (It is guaranteed each person can be carried by a boat.)
+**/
+
+class Solution {
+public:
+    
+    void Particion(vector<int> &d, int ini, int fin, int &pivote){
+        int elemPivote = d[ini], j = ini;
+        int buffer;
+        for(int i = ini + 1; i<= fin;++i){
+            if(d[i] < elemPivote){
+                ++j;
+                buffer = d[i];
+                d[i] = d[j];
+                d[j] = buffer;
+            }
+        }
+        pivote = j;
+        buffer = d[ini];
+        d[ini] = d[pivote];
+        d[pivote] = buffer;
+
+    };
+    void QuickSort(vector<int> &d, int ini, int fin){
+        int pivote = ini;
+        if(ini < fin){
+            Particion(d,ini, fin, pivote);
+            QuickSort(d,ini,pivote - 1);
+            QuickSort(d,pivote + 1, fin);
+        }
+    };
+
+    
+    int numRescueBoats(vector<int>& people, int limit) {
+        int min = 0;
+        if(people.size() == 0){
+            return 0;
+        }
+       
+        QuickSort(people, 0 , people.size() - 1);
+        
+        // Make the least heavy combination OF TWO PEOPLE with the heavy people to find minimum
+        // Fit as many people as possible in each boat so add their kgs
+        int start = 0, end = people.size() - 1;
+        while(start <= end){            
+            if(people[start] + people[end] <= limit){
+                ++start;
+            }
+        
+            --end;
+            ++min;
+            
+            // IF ODD NUMBER YOU NEED TO CONSIDER STILL THE MIDDLE PERSON
+            if(start == end){
+                ++min;
+                return min;
+            }
+            
+        }
+        
+        return min;
+        
+    }
+};
