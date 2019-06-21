@@ -1,0 +1,66 @@
+/** Solution to the problem found here:
+*
+* Assume you are an awesome parent and want to give your children some cookies. But, you should give each child at most one cookie. 
+* Each child i has a greed factor gi, which is the minimum size of a cookie that the child will be content with; and each cookie j has a size sj.
+* If sj >= gi, we can assign the cookie j to the child i, and the child i will be content. Your goal is to maximize the number of your content children and output the maximum number. 
+**/
+
+class Solution {
+public:
+    
+    void Particion(vector<int> &d, int ini, int fin, int &pivote){
+        int elemPivote = d[ini], j = ini;
+        int buffer;
+        for(int i = ini + 1; i<= fin;++i){
+            if(d[i] < elemPivote){
+                ++j;
+                buffer = d[i];
+                d[i] = d[j];
+                d[j] = buffer;
+            }
+        }
+        pivote = j;
+        buffer = d[ini];
+        d[ini] = d[pivote];
+        d[pivote] = buffer;
+
+    };
+    void QuickSort(vector<int> &d, int ini, int fin){
+        int pivote = ini;
+        if(ini < fin){
+            Particion(d,ini, fin, pivote);
+            QuickSort(d,ini,pivote - 1);
+            QuickSort(d,pivote + 1, fin);
+        }
+    };
+
+    
+    
+    int findContentChildren(vector<int>& g, vector<int>& s) {
+        int max = 0;
+        
+        if(g.size() == 0 || s.size() == 0){
+            return max;
+        }
+        // First, organize the children so that you can know if the min quota has been reached
+        QuickSort(g, 0, g.size() - 1);
+        QuickSort(s,0 , s.size() - 1);
+        
+        
+        int child = 0, cookie = 0;
+        // Now, each cookie must fulfill the greed factor of the current kid
+        while(child < g.size()){
+            if(g[child] <= s[cookie++]){
+                ++max;
+                ++child;
+            }
+            
+            // if there are more cookies than the amount of children, you have finished as well
+            if(cookie > s.size() - 1){
+                break;
+            }
+        }
+        
+        return max;
+    }
+};
