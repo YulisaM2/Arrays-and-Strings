@@ -1,0 +1,56 @@
+/** Solution to the problem found here: https://leetcode.com/problems/lemonade-change/
+*
+* At a lemonade stand, each lemonade costs $5. Customers are standing in a queue to buy from you, and order one at a time (in the order specified by bills).
+* Each customer will only buy one lemonade and pay with either a $5, $10, or $20 bill. You must provide the correct change to each customer, so that the net transaction is that the customer pays $5.
+* Note that you don't have any change in hand at first.
+* Return true if and only if you can provide every customer with correct change.
+*
+**/
+
+class Solution {
+public:
+    bool lemonadeChange(vector<int>& bills) {
+        // Only 5, 10 and 20 bills
+        
+        // Iterate through array and check if bigger than 5
+        // If it is, check saved and subtract from it enough
+        //  if it is smaller than 0 return false
+        // return true
+        
+        // at 0 5 bills
+        // at 1 10 bills
+        // Not saving 20 bills because we dont use them as change ever (biggest currency)
+        vector<int> saved(2);
+        
+        for(int i = 0; i < bills.size(); ++i){
+            if(bills[i] > 5){
+                // if it is a 10 bill
+                if(bills[i] == 10){
+                    if(saved[0] <= 0){
+                        return false;
+                    }else{
+                        saved[0] -= 5;
+                        saved[1] += 10;
+                    }
+                // if it is a 20 bill
+                }else{
+                    // check if you have one 10 and a 5
+                    if(saved[1] >= 10 && saved[0] >= 5){
+                        saved[1]-= 10;
+                        saved[0]-=5;
+                    // or three fives
+                    }else if(saved[0] >= 15){
+                        saved[0] -= 15;
+                    }else{
+                        return false;
+                    }
+                }
+            // if it is a 5 bill
+            }else{
+                saved[0] += 5;
+            }
+        }
+        
+        return true;
+    }
+};
